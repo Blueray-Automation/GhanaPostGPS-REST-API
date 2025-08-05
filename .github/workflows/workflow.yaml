@@ -1,1 +1,42 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+      - release
+
+jobs:
+  
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install curl
+        run: sudo apt-get update && sudo apt-get install -y curl
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker Login to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          export SEMVER_VERSION=$(printf "0.3.%s" ${{ github.run_id }})
+          export BRANCH_NAME=$(echo ${{ github.ref_name }} | tr / -)
+          export COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-8)
+          export DOCKER_TAG=${BRANCH_NAME}-${COMMIT_HASH}
+          export CI_TAG=${BRANCH_NAME}-${SEMVER_VERSION}
+
+          docker buildx build \
+            --platform linux/amd64 \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref=ghcr.io/blueray-automation/GhanaPostGPS-REST-API:cache \
+            --tag ghcr.io/blueray-automation/GhanaPostGPS-REST-API:$CI_TAG \
+            --push .
 
