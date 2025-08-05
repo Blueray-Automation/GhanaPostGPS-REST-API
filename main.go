@@ -42,6 +42,7 @@ type Address struct {
 
 type Info struct {
 	Area            string
+	Community       string
 	AddressV1       string
 	CenterLatitude  float64
 	CenterLongitude float64
