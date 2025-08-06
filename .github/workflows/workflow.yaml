@@ -36,7 +36,7 @@ jobs:
           docker buildx build \
             --platform linux/amd64 \
             --cache-to=type=inline \
-            --cache-from=type=registry,ref=ghcr.io/blueray-automation/GhanaPostGPS-REST-API:cache \
-            --tag ghcr.io/blueray-automation/GhanaPostGPS-REST-API:$CI_TAG \
+            --cache-from=type=registry,ref=ghcr.io/blueray-automation/ghanapostgps-rest-api:cache \
+            --tag ghcr.io/blueray-automation/ghanapostgps-rest-api:$CI_TAG \
             --push .
 
