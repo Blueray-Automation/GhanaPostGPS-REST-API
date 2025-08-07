@@ -16,4 +16,4 @@ FROM golang:1.22
 
 COPY --from=builder /build /app
 
-ENTRYPOINT ["/app"]
+ENTRYPOINT ["./ghanapostgps"]
