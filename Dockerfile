@@ -1,23 +1,16 @@
-# Stage 1: Build the binary
-FROM golang:1.22 AS builder
-
-# Set working directory inside builder
-WORKDIR /app
-
-# Copy source files
-COPY . .
-
-# Build the binary
-RUN go build -o ghanapostgps main.go
-
-# Stage 2: Create minimal final image
 FROM golang:1.22
 
-# Set working directory inside runtime image
+# Set working directory
 WORKDIR /app
 
-# Copy binary from builder stage to runtime image
-COPY --from=builder /app/ghanapostgps .
+# Copy everything into the container
+COPY . .
 
-# Entrypoint to run the binary
+# Build the Go binary
+RUN go build -o ghanapostgps main.go
+
+# Expose the port (optional, for clarity)
+EXPOSE 5001
+
+# Run the binary
 ENTRYPOINT ["./ghanapostgps"]
